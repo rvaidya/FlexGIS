@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Flexgis by rvaidya</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Flexgis</h1>
+        <p>FlexGIS allows end-users to perform basic geospatial analysis in a Flash frontend, without having to be familiar with standard GIS tools. Users can combine layers on-the-fly, to create advanced data visualizations.</p>
+        <p class="view"><a href="https://github.com/rvaidya/FlexGIS">View the Project on GitHub <small>rvaidya/FlexGIS</small></a></p>
+        <ul>
+          <li><a href="https://github.com/rvaidya/FlexGIS/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/rvaidya/FlexGIS/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/rvaidya/FlexGIS">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>FlexGIS is a GIS application development framework that focuses on ease and usability, both for the developer and for the user.  Out of the box, FlexGIS allows users to perform rudimentary GIS analysis, in the form of identifying features.  However, the true power of FlexGIS lies in the ease of its extensibility.  The FlexGIS framework combines a flexible and powerful frontend, a minimal backend, and a spatially-enabled database, PostGIS, that works well with the other components.</p>
+
+<p>The FlexGIS frontend is written in Adobe Flex, an extension to Flash/ActionScript that allows rapid drag-and-drop GUI development.  This allows the frontend to be customized quickly and easily.  Flex is a powerful language focused on data retrieval and display, so extending the frontend and components is also a quick task once the developer is familiar with the Flex language.  For simplicity’s sake, this paper will refer to the Flex platform solely as “Flex”, even though the actual languages used are a combination of ActionScript and MXML.</p>
+
+<p>The backend of FlexGIS is designed to be as simple as possible, pushing the majority of data processing, user interaction, etc. to the frontend, relieving processing load on the server by relegating the work to the clients.  The primary function of the backend is to receive data requests from the frontend, execute them, and return data in a format usable by the frontend (typically XML).  The default backend is written in PHP, utilizing MapServer and PostGIS as the rendering engine, but developers wishing to use different components, or their own components, can rewrite the backend as they see fit. </p>
+
+<p>PostGIS is a spatial extension to the PostgreSQL relational database, and the most stable and well-known free spatial data storage system.  Since it runs on top of PostgreSQL, it takes advantage of the multitude of tools and support that exist for the PostgreSQL RDBMS.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/rvaidya">rvaidya</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
