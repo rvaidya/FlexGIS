@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="components.containers.*" width="424" height="370" backgroundColor="#69FF82" themeColor="#18547B" layout="absolute" title="Debug Query Window" allowDrag="true" allowClose="true" initialize="init(event)">
+<mx:Script>
+	<![CDATA[
+		import utilities.Configuration;
+		import mx.events.CloseEvent;
+		private function init(e:Event):void {
+			this.addEventListener(CloseEvent.CLOSE, function(event:CloseEvent):void{
+					event.target.visible = false;
+				});
+		}
+		public function queryHandler():void {
+			var request:URLRequest = new URLRequest(Configuration.hostURL + "query.php");
+			request.method = "POST";
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, completeHandler);
+			var query:XML = <query></query>
+			query.@sessionID = "ABCDE";
+			query.type = queryType.text;
+			query.fields = queryFields.text;
+			query.table = queryTable.text;
+			query.limit = queryLimit.text;
+			query.order = queryOrder.text;
+			query.where = queryWhere.text;
+			request.data = query;
+			loader.load(request);
+		}
+		public function completeHandler(event:Event):void {
+			queryResultText.text = event.target.data;
+		}
+		public function clearHandler():void {
+			queryType.text = "";
+			queryTable.text = "";
+			queryWhere.text = "";
+			queryFields.text = "";
+			queryLimit.text = "";
+			queryOrder.text = "";
+			queryResultText.text = "";
+		}
+	]]>
+</mx:Script>
+	<mx:TextArea x="19" y="169" width="380" height="162" editable="false" wordWrap="false" verticalScrollPolicy="on" id="queryResultText"/>
+	<mx:Button x="10" y="140" label="Query" click="queryHandler()"/>
+	<mx:Button x="79" y="140" label="Clear" click="clearHandler()"/>
+	<mx:Label x="10" y="10" text="Type:"/>
+	<mx:Label x="10" y="36" text="Table:"/>
+	<mx:Label x="10" y="62" text="Fields:"/>
+	<mx:Label x="10" y="88" text="Where:"/>
+	<mx:Label x="10" y="114" text="Limit:"/>
+	<mx:TextInput x="55" y="8" id="queryType"/>
+	<mx:TextInput x="55" y="34" id="queryTable"/>
+	<mx:TextInput x="55" y="86" id="queryWhere"/>
+	<mx:TextInput x="55" y="60" id="queryFields"/>
+	<mx:TextInput x="55" y="112" id="queryLimit"/>
+	<mx:Label x="223" y="10" text="Order By:"/>
+	<mx:TextInput x="289" y="8" width="119" id="queryOrder"/>
+	
+</SuperPanel>

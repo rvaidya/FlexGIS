@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns="components.containers.*" xmlns:mx="http://www.adobe.com/2006/mxml" width="400" height="300" title="Identify Feature"  allowDrag="true" allowClose="true" initialize="init(event)">
+	<mx:Script>
+		<![CDATA[
+		
+		/*	This class implements the feature identification functionality, and is the prime example for
+			how tools and windows work.  Refer to the IdentifyTool class for more information on the tool-
+			specific functionality.
+			Since work is pushed from tools to associated windows, the actual execution of the Identify
+			feature is located in this class.  The IdentifyTool instantiates an IdentifyWindow and calls
+			the getIdentifyData, which queries the identify.php PHP script, get results for the specific
+			geometry that was clicked, and displays the results in a DataGrid.
+		*/
+		
+		import com.google.maps.Map;
+		import mx.core.Application;
+		import mx.events.CloseEvent;
+		import flash.net.URLLoader;
+		import flash.net.URLRequest;
+		import utilities.Configuration;
+		import utilities.State;
+		import com.google.maps.LatLng;
+		
+		[Bindable]
+		private var fields:Array = new Array();
+		
+		private function init(e:Event):void {
+			this.addEventListener(CloseEvent.CLOSE, function(event:CloseEvent):void {
+				event.target.visible = false;
+				Application.application.removeChild(State.state.identifyWindow);
+				State.state.identifyWindow = null;
+			});
+		}
+		public function getIdentifyData(latlng:LatLng, layer:String):void {
+			var request:URLRequest = new URLRequest(Configuration.hostURL + "identify.php");
+			request.method = "POST";
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, fetchCompleteHandler);
+			var query:XML = <identify_request/>
+			query.@token = State.token;
+			query.@layer = layer
+			query.@lat = latlng.lat();
+			query.@lng = latlng.lng();
+			request.data = query;
+			loader.load(request);
+		}
+		private function fetchCompleteHandler(e:Event):void {
+			trace(e.target.data);
+			var response:XML = new XML(e.target.data);
+			if(response.@result == "OK") {
+				fields = new Array();
+				for each(var field:XML in response.field) {
+					var obj:Object = new Object();
+					obj.name = field.@name;
+					obj.data = field;
+					fields.push(obj);
+				}
+			}
+		}
+		
+		]]>
+	</mx:Script>
+	<mx:DataGrid id="adg1" width="100%" height="100%" dataProvider="{fields}" >
+	<mx:columns>
+		<mx:DataGridColumn dataField="name" headerText = "Fields" />
+        <mx:DataGridColumn dataField="data" headerText = "Values"/>
+	</mx:columns>
+	</mx:DataGrid>
+</SuperPanel>

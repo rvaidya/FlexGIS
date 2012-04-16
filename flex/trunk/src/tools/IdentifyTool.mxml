@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tool xmlns="tools.*" xmlns:mx="http://www.adobe.com/2006/mxml" initialize="init()" label="Identify">
+	<mx:Script>
+		<![CDATA[
+		
+		/*	This tool handles identify requests.  When it is selected, any point clicked on the map will
+			call up an Identify window, and the tool will pass on the identify parameters to the Window.
+			To see how tool events are handled, refer to the Tool class.
+		*/
+		
+		import components.LayerList;
+		import mx.core.Application;
+		import com.google.maps.*;
+		import windows.IdentifyWindow;
+		import utilities.State;
+		
+		private function init():void {
+			
+		}
+		
+		public override function mouseClickHandler(app:Application, map:Map, layerList:LayerList, latLng:LatLng):void {
+			var layerName:String = layerList.getSelectedLayerName();
+			if(layerName == null || layerName == "") return;
+			var iwin:IdentifyWindow;
+			if(State.state.identifyWindow == null) {
+				iwin = new IdentifyWindow();
+				var pt:Point = map.fromLatLngToViewport(latLng);
+				iwin.x = pt.x+map.x;
+				iwin.y = pt.y+map.y;
+				if(iwin.x+iwin.width > app.width) iwin.x = app.width - iwin.width;
+				if(iwin.y+iwin.height > app.height) iwin.y = app.height - iwin.height;
+				State.state.identifyWindow = iwin;
+				app.addChild(iwin);
+			}
+			else iwin = State.state.identifyWindow;
+			iwin.getIdentifyData(latLng, layerName);
+		}
+		]]>
+	</mx:Script>
+</Tool>

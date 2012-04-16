@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:AdvancedDataGrid xmlns:mx="http://www.adobe.com/2006/mxml" groupItemRenderer="components.renderers.CheckADGRenderer" implements="flash.utils.IExternalizable" initialize="init()" selectionMode="singleRow">
+	<mx:columns>
+		<mx:AdvancedDataGridColumn dataField="@display_name" headerText="Name"/>
+	</mx:columns>
+
+	<mx:Script>
+		<![CDATA[
+		/*	This component is responsible for loading the list of renderable layers from the server and
+			displaying them in an AdvancedDataGrid.  The layers are stored internally as XML.  After
+			fetching the layer results as XML, they are separated in the refreshDisplay method to
+			"Public Layers" and "My Layers", depending on layer ownership.
+		*/
+		import com.google.maps.Map;
+		import utilities.Configuration;
+		import mx.collections.HierarchicalData;
+		import mx.collections.HierarchicalCollectionView;
+		import mx.collections.IHierarchicalCollectionView;
+		import mx.collections.XMLListCollection;
+		
+		[Bindable]
+		public var layers:XML;
+		[Bindable]
+		public var display:XMLList;
+		public var map:Map;
+		
+		public function readExternal(input:IDataInput):void
+   		{
+   			layers = input.readObject() as XML;
+    	}
+
+	    public function writeExternal(output:IDataOutput):void
+	    {
+	    	output.writeObject(layers);
+	    }
+	    
+	    // Get name of the layer that is currently selected in the LayerList.
+	    public function getSelectedLayerName():String {
+	    	var x:XML = this.selectedItem as XML;
+	    	if(x == null) return "";
+            return x.@name;
+	    }
+	    
+	    private function init():void {
+	    	layers = <LayerList/>
+	    	display = 
+	    	<>
+				<Folder display_name="Fetching Data..." enabled="false" isBranch="false"/>
+			</>
+			var xc:XMLListCollection = new XMLListCollection(display);
+			var h:HierarchicalData = new HierarchicalData(xc);
+			this.dataProvider = h;
+			addEventListener("LayerStateChangeEvent",layerStateChangeHandler);
+	    }
+	    
+	    public function layerStateChangeHandler(event:Event):void {
+	    	if(layers.layer != display..layer) {
+	    		layers.layer = display..layer;
+	    		map.dispatchEvent(new Event("TileLayerRefresh"));
+	    	}
+	    }
+	    
+	    public function refreshDisplay():void {
+			display.(@display_name=="Public Layers").setChildren(layers.layer.(@owner==0));
+			display.(@display_name=="My Layers").setChildren(layers.layer.(@owner!=0));
+	    }
+		
+		public function addLayer(l:XML):void {
+			layers.appendChild(l);
+			refreshDisplay();
+		}
+		public function getLayer(i:int):XML {
+			return layers.layer[i];
+		}
+		public function length():int {
+			return layers.layer.length();
+		}
+		
+		private function fetchCompleteHandler(e:Event):void {
+			var response:XML = new XML(e.target.data);
+			if(response.@result == "OK") {
+				display = 
+				<>
+					<Folder display_name="Public Layers" enabled="false" isBranch="true"/>
+					<Folder display_name="My Layers" enabled="false" isBranch="true"/>
+				</>
+				var xc:XMLListCollection = new XMLListCollection(display);
+				var h:HierarchicalData = new HierarchicalData(xc);
+				this.dataProvider = h;
+				for each(var layer:XML in response.layer) {
+					layer.@enabled = false;
+					layers.appendChild(layer);
+				}
+				refreshDisplay();
+				map.dispatchEvent(new Event("TileLayerRefresh"));
+			}
+		}
+		
+		public function fetchLayers(s:String):void {
+			display = 
+			<>
+				<Folder display_name="Fetching Data..." enabled="false" isBranch="false"/>
+			</>
+			var xc:XMLListCollection = new XMLListCollection(display);
+			var h:HierarchicalData = new HierarchicalData(xc);
+			this.dataProvider = h;
+			var request:URLRequest = new URLRequest(Configuration.hostURL + "layers.php");
+			request.method = "POST";
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, fetchCompleteHandler);
+			var query:XML = <layers_request/>
+			query.@token = s;
+			request.data = query;
+			loader.load(request);
+		}
+		
+		
+		]]>
+	</mx:Script>
+</mx:AdvancedDataGrid>

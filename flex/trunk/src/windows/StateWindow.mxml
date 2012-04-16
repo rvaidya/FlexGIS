@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="components.containers.*" width="602" height="422" backgroundColor="#B97A6B" title="State" layout="absolute" allowDrag="true" allowClose="true" initialize="init(event)">
+<mx:Script>
+	<![CDATA[
+		import mx.core.Application;
+		import utilities.Base64;
+		import utilities.Configuration;
+		import utilities.State;
+		import mx.events.CloseEvent;
+		
+		private function init(e:Event):void {
+			this.addEventListener(CloseEvent.CLOSE, function(event:CloseEvent):void{
+					event.target.visible = false;
+				});
+		}
+		
+		private function save():void {
+			State.state.properties.textObj = stateContents.text;
+			State.state.token = sessionID.text;
+			State.save();
+		}
+		
+		private function load():void {
+			State.load(sessionID.text);
+			stateContents.text = State.state.properties.textObj;
+		}
+		
+	]]>
+</mx:Script>
+	<mx:Label x="10" y="52" text="State Contents:"/>
+	<mx:TextArea x="111" y="51" width="300" height="206" id="stateContents" editable="true"/>
+	<mx:Label x="10" y="10" text="Session ID:"/>
+	<mx:TextInput x="111" y="8" width="300" text="NIA3L4IL160FNULPLRTX55L91QBC20W1" id="sessionID"/>
+	<mx:Button x="111" y="265" label="SAVE" click="save()"/>
+	<mx:Button x="176" y="265" label="LOAD" click="load()"/>
+</SuperPanel>

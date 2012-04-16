@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" xmlns:flexlib="http://code.google.com/p/flexlib/" xmlns:components="components.*" xmlns:maps="com.google.maps.*" xmlns:mapcontrols="com.google.maps.controls.*" width="876" height="600" xmlns:windows="windows.*" backgroundGradientAlphas="[1.0, 1.0]" backgroundGradientColors="[#536995, #798BB3]" xmlns:ns1="flexlib.containers.*" xmlns:ns2="tools.*" initialize="init()">
+<mx:Style source="assets/css/styles.css"/>
+
+	<mx:Script>
+		<![CDATA[
+		
+		/* This is the main entry point of the client application. */
+		
+		import events.RefreshedEvent;
+		import utilities.State;
+		import utilities.Configuration;
+		import com.google.maps.overlays.TileLayerOverlay;
+	    import com.google.maps.LatLng;
+	    import com.google.maps.Map;
+	    import com.google.maps.MapEvent;
+	    import com.google.maps.MapMouseEvent;
+	    import com.google.maps.MapType;
+	    import com.google.maps.controls.*;
+	    import com.google.maps.interfaces.*;
+	    import com.google.maps.CopyrightCollection;
+	    import com.google.maps.TileLayerBase;
+	    
+	    import mx.events.MenuEvent;
+	    import mx.utils.URLUtil;
+
+	    import mapserver.*;
+	    import tools.Tool;
+		
+		private function init():void {
+			var arr:Array = flash.system.Capabilities.version.split(",");
+			var majorVersion:String = arr[0].split(" ")[1];
+		}
+		
+		private function onMapPreinitialize(event:MapEvent):void {
+			
+			var menu:ContextMenu = new ContextMenu();
+			menu.hideBuiltInItems();
+			var item:ContextMenuItem = new ContextMenuItem("Test Item");
+			menu.customItems.push(item);
+			item.addEventListener(flash.events.ContextMenuEvent.MENU_ITEM_SELECT,function(e:ContextMenuEvent):void {
+				trace(e.toString());
+			});
+			this.contextMenu = menu;
+		}
+		
+		private function onMapReady(event:MapEvent):void {
+			
+  			map.setCenter(new LatLng(37.0,-120.202142), 6, MapType.NORMAL_MAP_TYPE);
+  			map.addControl(new PositionControl);
+  			map.addControl(new ZoomControl);
+  			map.addControl(new MapTypeControl);
+  			map.addEventListener(MapMouseEvent.MOUSE_MOVE, mapMouseMoveHandler);
+  			map.addEventListener(MapMouseEvent.MOUSE_UP, mapMouseClickHandler);
+  			map.addEventListener("TileLayerRefreshed", refreshedHandler);
+  			
+  			// Create and initialize the LayerList and the MapServer tile layer (and tile overlay).
+  			layerList.fetchLayers(State.token);
+  			var tileLayer:MapServerTileLayer = new MapServerTileLayer(map);
+			var tileLayerOverlay:TileLayerOverlay = new TileLayerOverlay(tileLayer);
+			tileLayer.setLayerList(layerList);
+			tileLayer.setOverlay(tileLayerOverlay)
+			map.addOverlay(tileLayerOverlay);
+			
+			//MouseUtil.setCursor();
+			
+		}
+		
+		private function refreshedHandler(event:RefreshedEvent):void {
+			if (event.timestamp != null) {
+				timestampLabel.text = "Last request loaded in: " + event.timestamp.getSeconds() + "." + event.timestamp.getMilliseconds() + "s";			
+			} 
+		}
+		
+		private function menuClickHandler(event:MenuEvent):void {
+			switch(event.label) {
+				case "Account Window": accountWindow.visible = true; break;
+				case "Query Window": queryWindow.visible = true; break;
+				case "State Window": stateWindow.visible = true; break;
+				default: break;
+			}
+		}
+		private function mapMouseMoveHandler(event:MapMouseEvent):void {
+			var l:LatLng = event.latLng;
+			lngLabel.text = "Longitude: " + l.lng();
+			latLabel.text = "Latitude: " + l.lat();
+		}
+		
+		/*	This is where tool clicks are handled.  A more pluggable system for tools is future work.
+			The Tool class keeps track of which tool is selected.
+		*/
+		private function mapMouseClickHandler(event:MapMouseEvent):void {
+			var latLng:LatLng = event.latLng;
+			Tool.toolClicked(this, map, layerList, latLng);
+		}
+		private function menuShowHandler(event:MenuEvent):void {
+			
+		}
+		private function fetchAPIKey():String {
+			return Configuration.apiKey;
+		}
+		]]>
+	</mx:Script>
+	<maps:Map x="241" y="86" id="map" width="545" height="462" key="{fetchAPIKey()}" mapevent_mapready="onMapReady(event)" mapevent_mappreinitialize= "onMapPreinitialize(event)" />
+	<components:LayerList id="layerList" x="10" y="86" width="223" height="431" wordWrap="true" map="{map}"/>
+	
+	<mx:Label x="10" y="55" text="Layers" fontSize="14" color="#000000"/>
+	<windows:AccountWindow x="191" y="59" visible="false" id="accountWindow">
+	</windows:AccountWindow>
+	<windows:StateWindow x="191" y="59" visible="false" id="stateWindow">
+	</windows:StateWindow>
+	<windows:QueryWindow x="238" y="125" visible="false" id="queryWindow">
+	</windows:QueryWindow>
+	<mx:MenuBar width="813" id="applicationMenuBar" labelField="@label" menuShow="menuShowHandler(event)" itemClick="menuClickHandler(event)" showRoot="false" height="33" x="63" y="0" alpha="1.0" fillAlphas="[1.0, 1.0, 1.0, 1.0]" fillColors="[#A0B5E5, #798BB3, #2B54B2, #2B54B2]" themeColor="#798BB3" borderColor="#193676" cornerRadius="0" color="#000000">
+		<mx:XMLList>
+					<menuitem id="rootMenu">
+			             <menuitem label="Initial Menu" >
+			                 <menuitem label="Account Window" type="normal"/>
+			                 <menuitem label="Query Window" type="normal"/>
+			                 <menuitem label="State Window" type="normal"/>
+			                 <menuitem label="SubMenuItem A-3" type="check"/>
+			             </menuitem>
+			             <menuitem label="MenuItem B" type="normal"/>
+			             <menuitem label="MenuItem C" type="normal"/>
+			             <menuitem label="MenuItem D" >
+			                 <menuitem label="SubMenuItem D-1" type="radio" groupName="one"/>
+			                 <menuitem label="SubMenuItem D-2" type="radio" groupName="one"/>
+			                 <menuitem label="SubMenuItem D-3" type="radio" groupName="one"/>
+			             </menuitem>
+			     	</menuitem>
+		</mx:XMLList>
+	</mx:MenuBar>
+	<mx:Button label="Not Logged In" alpha="0.0" click="accountWindow.visible = true;" id="loginStatusButton" x="680" y="0"/>
+	<mx:Image x="0" y="0" source="assets/img/cens_small.png" width="65" height="47" autoLoad="true" scaleContent="false"/>
+	<ns2:IdentifyTool x="63" y="41"/>
+	<mx:Label x="241" y="547" text="Longitude:" width="272" id="lngLabel"/>
+	<mx:Label x="521" y="547" text="Latitude:" width="265" id="latLabel"/>
+	<mx:Label x="241" y="556" text="Last request loaded in: " id="timestampLabel"/>
+</mx:Application>

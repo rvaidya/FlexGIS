@@ -1,0 +1,157 @@
+Application {
+   backgroundColor: #cccccc;
+   backgroundGradientColors: #bdcbd2, #5a8398;
+}
+Button {
+   highlightAlphas: 1, 0.33;
+   fillAlphas: 1, 0.16, 0.18, 1;
+   fillColors: #5f89b9, #697182, #ffffff, #eeeeee;
+}
+Panel {
+	headerHeight: 26;
+	roundedBottomCorners: true;
+	borderThicknessTop: 0;
+	borderThicknessBottom: 3;
+	borderThicknessLeft: 3;
+	borderThicknessRight: 3;
+	borderAlpha: 1.0;
+	titleStyleName: "mypanelTitle";
+}
+.mypanelTitle {
+	fontFamily: Arial;
+	fontSize: 10;
+	fontWeight: bold;
+}
+.closeBtn {
+	upSkin:        Embed('/assets/img/closeButton.png');
+	overSkin:      Embed('/assets/img/closeButton.png');
+	downSkin:      Embed('/assets/img/closeButton.png');
+	disabledSkin:  Embed('/assets/img/closeButton.png');
+}
+.increaseBtn {
+	upSkin:        Embed('/assets/img/increaseButton.png');
+	overSkin:      Embed('/assets/img/increaseButton.png');
+	downSkin:      Embed('/assets/img/increaseButton.png');
+	disabledSkin:  Embed('/assets/img/increaseButton.png');
+}
+.decreaseBtn {
+	upSkin:        Embed('/assets/img/decreaseButton.png');
+	overSkin:      Embed('/assets/img/decreaseButton.png');
+	downSkin:      Embed('/assets/img/decreaseButton.png');
+	disabledSkin:  Embed('/assets/img/decreaseButton.png');
+}
+/*.minimizeBtn {
+	upSkin:        Embed('/assets/img/minimizeButton.png');
+	overSkin:      Embed('/assets/img/minimizeButton.png');
+	downSkin:      Embed('/assets/img/minimizeButton.png');
+	disabledSkin:  Embed('/assets/img/minimizeButton.png');
+}*/
+.resizeHndlr {
+	upSkin:        Embed('/assets/img/resizeHandler.png');
+	overSkin:      Embed('/assets/img/resizeHandler.png');
+	downSkin:      Embed('/assets/img/resizeHandler.png');
+	disabledSkin:  Embed('/assets/img/resizeHandler.png');
+}
+SuperPanel
+{
+	resize-grip-skin:          	Embed(source="/assets/img/resizeHandler.png");
+	
+	actionAlpha:		 		0.75;
+    border-color: 				#ffffff;
+    border-alpha: 				1;
+    border-thickness-left: 		0;
+    border-thickness-top: 		0;
+    border-thickness-bottom:	9;
+    border-thickness-right: 	0;
+    corner-radius: 				6;
+    highlight-alphas: 			0.1, 0;
+    header-colors: 				#666666, #333333;
+    footer-colors: 				#ffffff, #ffffff;
+    dropShadowEnabled: 			true;
+    shadow-distance:			4;
+    
+    title-style-name:			"mypanelTitle";
+    close-button-style-name:	"closeButton";
+    minimize-button-style-name:	"minimizeButton";
+    maximize-button-style-name:	"maximizeButton";
+    
+    inactive-header-colors: 	#999999, #666666;
+    inactive-footer-colors: 	#ffffff, #ffffff;
+	inactive-shadow-distance:	1;
+	inactive-title-style-name:	"mypanelInactiveTitle";
+}
+
+.closeButton
+{
+	icon: 						Embed(source="/assets/img/icon_close_up.png");
+	up-icon: 					Embed(source="/assets/img/icon_close_up.png");
+	over-icon: 					Embed(source="/assets/img/icon_close_over.png");
+	down-icon: 					Embed(source="/assets/img/icon_close_down.png");
+	disabled-skin: 				Embed(source="/assets/img/clear.png");
+	selected-up-skin: 			Embed(source="/assets/img/clear.png");
+	selected-over-skin: 		Embed(source="/assets/img/clear.png");
+	selected-down-skin: 		Embed(source="/assets/img/clear.png");
+    down-skin: 					Embed(source="/assets/img/clear.png");
+    over-skin: 					Embed(source="/assets/img/clear.png");
+    up-skin: 					Embed(source="/assets/img/clear.png");	
+}
+
+.maximizeButton
+{
+	icon: 						Embed(source="/assets/img/icon_expand_up.png");
+	up-icon: 					Embed(source="/assets/img/icon_expand_up.png");
+	over-icon: 					Embed(source="/assets/img/icon_expand_over.png");
+	selected-over-icon: 		Embed(source="/assets/img/icon_expand_over.png");
+	down-icon: 					Embed(source="/assets/img/icon_expand_down.png");
+	selected-down-icon: 		Embed(source="/assets/img/icon_expand_down.png");
+	disabled-skin: 				Embed(source="/assets/img/clear.png");
+	selected-up-skin: 			Embed(source="/assets/img/clear.png");
+	selected-over-skin: 		Embed(source="/assets/img/clear.png");
+	selected-down-skin: 		Embed(source="/assets/img/clear.png");
+    down-skin: 					Embed(source="/assets/img/clear.png");
+    over-skin: 					Embed(source="/assets/img/clear.png");
+    up-skin: 					Embed(source="/assets/img/clear.png");	
+}
+
+.minimizeButton
+{
+	icon: 						Embed(source="/assets/img/icon_minimize_up.png");
+	up-icon: 					Embed(source="/assets/img/icon_minimize_up.png");
+	over-icon: 					Embed(source="/assets/img/icon_minimize_over.png");
+	selected-over-icon: 		Embed(source="/assets/img/icon_minimize_over.png");
+	down-icon: 					Embed(source="/assets/img/icon_minimize_down.png");
+	selected-down-icon: 		Embed(source="/assets/img/icon_minimize_down.png");
+	disabled-skin: 				Embed(source="/assets/img/clear.png");
+	selected-up-skin: 			Embed(source="/assets/img/clear.png");
+	selected-over-skin: 		Embed(source="/assets/img/clear.png");
+	selected-down-skin: 		Embed(source="/assets/img/clear.png");
+    down-skin: 					Embed(source="/assets/img/clear.png");
+    over-skin: 					Embed(source="/assets/img/clear.png");
+    up-skin: 					Embed(source="/assets/img/clear.png");
+}
+
+.mypanelTitle
+{
+	font-weight:				bold;
+    color: 						#ffffff;
+}
+
+.mypanelInactiveTitle
+{
+	font-weight:				bold;
+    color: 						#bbbbbb;
+}
+
+.leftBox
+{
+	border-style:				solid;
+	border-sides:				right;
+	border-color:				#666666;
+	background-color:			#000000;
+	background-alpha:			0.6;
+	
+	padding-top:				20;
+	padding-bottom:				20;
+	padding-left:				20;
+	padding-right:				20;
+}

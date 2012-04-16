@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Button xmlns="tools.*" xmlns:mx="http://www.adobe.com/2006/mxml" label="Tool" initialize="init()" click="Tool.selectTool(this);">
+	<mx:Script>
+		<![CDATA[
+		
+		/*	This class is the parent class for all tools.  Every time a child tool is created, it is added
+			to a static Array of tools located in this class.  This array is used to track which tools have
+			been created, and which tool is currently selected.
+			
+			The toolClicked function is a function called from the main application file (FlexGIS.mxml)
+			whenever a point is clicked on the map.  The function checks to see which tool is selected (if
+			any), and forwards the call to that Tool's mouseClickHandler function.
+		*/
+		
+		import components.LayerList;
+		import mx.core.Application;
+		import com.google.maps.*;
+		import windows.IdentifyWindow;
+		import utilities.State;
+		
+		private static var toolsArray:Array = new Array();
+		private static var selectedTool:Tool = null;
+		
+		public static function addTool(t:Tool):void {
+			toolsArray.push(t);
+		}
+		
+		private function init():void {
+			addTool(this);
+		}
+		
+		public static function removeTool(t:Tool):void {
+			var i:int = toolsArray.indexOf(t);
+			if(selectedTool == t) selectedTool = null;
+			if(i != -1) {
+				var tArray:Array = new Array();
+				for(var j:int = 0;j < toolsArray.length; j++) {
+					if(j == i) continue;
+					tArray.push(toolsArray[j]);
+				}
+				toolsArray = tArray;
+			}
+		}
+		
+		public static function selectTool(t:Tool):void {
+			if(t.selected == true) {
+				trace("what");
+				t.selected = false;
+				selectedTool = null;
+				return;
+			}
+			var i:int = toolsArray.indexOf(t);
+			selectedTool = t;
+			for(var j:int = 0;j < toolsArray.length; j++) {
+				if(j == i) toolsArray[j].selected = true;
+				else toolsArray[j].selected = false;
+			}
+		}
+		
+		public function mouseClickHandler(app:Application, map:Map, layerList:LayerList, latLng:LatLng):void {
+			
+		}
+		
+		public static function toolClicked(app:Application, map:Map, layerList:LayerList, latLng:LatLng):void {
+			if(selectedTool == null) return;
+			selectedTool.mouseClickHandler(app, map, layerList, latLng);
+		}
+		
+		]]>
+	</mx:Script>
+</mx:Button>

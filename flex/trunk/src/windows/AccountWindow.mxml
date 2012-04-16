@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SuperPanel xmlns:mx="http://www.adobe.com/2006/mxml" xmlns="components.containers.*" width="602" height="422" backgroundColor="#A2A2BF" title="Account Login" layout="absolute" allowDrag="true" allowClose="true" initialize="init(event)">
+<mx:Script>
+	<![CDATA[
+		import mx.core.Application;
+		import utilities.Configuration;
+		import utilities.State;
+		import mx.events.CloseEvent;
+		import mx.utils.URLUtil;
+		private function clear():void {
+			username_field.text = "";
+			password_field.text = "";
+		}
+		private function init(e:Event):void {
+			this.addEventListener(CloseEvent.CLOSE, function(event:CloseEvent):void{
+					event.target.visible = false;
+				});
+		}
+		private function submit():void {
+			var request:URLRequest = new URLRequest(Configuration.hostURL + "login.php");
+			request.method = "POST";
+			var loader:URLLoader = new URLLoader();
+			loader.addEventListener(Event.COMPLETE, completeHandler);
+			var variables:URLVariables = new URLVariables;
+			variables.username = username_field.text;
+			variables.password = password_field.text;
+			request.data = variables;
+			loader.load(request);
+		}
+		
+		private function completeHandler(e:Event):void {
+			if(e.target.data.length == 32) {
+				sessionToken.text = e.target.data;
+				Application.application.loginStatusButton.label = "Logged in as: " + username_field.text;
+			}
+		}
+		
+		private function calculateSessionSize():void {
+			loadedFrom.text = "Application loaded from: " + URLUtil.getServerName(Application.application.loaderInfo.url);
+			//var a:ByteArray = State.save();
+			//sessionSize.text = a.length.toString();
+		}
+	]]>
+</mx:Script>
+		<mx:Label x="10" y="24" text="Username"/>
+		<mx:Label text="Password" x="10" y="50"/>
+		<mx:TextInput x="80" y="22" id="username_field"/>
+		<mx:TextInput displayAsPassword="true" x="80" y="48" id="password_field"/>
+		<mx:Button label="Clear" x="177" y="78" click="clear()"/>
+		<mx:Button x="80" y="78" label="Submit" click="submit()"/>
+		<mx:Label x="10" y="122" text="Session Token:"/>
+		<mx:Label x="126" y="122" text="Not Logged In" id="sessionToken"/>
+		<mx:Label x="10" y="148" text="Session Byte Size:"/>
+		<mx:Label x="126" y="148" text="N/A" id="sessionSize"/>
+		<mx:Button x="10" y="174" label="Calculate" click="calculateSessionSize()"/>
+		<mx:Label id="loadedFrom" x="10" y="365" text="Application loaded from: "/>
+</SuperPanel>
